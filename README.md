@@ -1,4 +1,4 @@
-## aframe-aframe-soundscape-component
+## aframe-soundscape-component
 
 [![Version](http://img.shields.io/npm/v/aframe-aframe-soundscape-component.svg?style=flat-square)](https://npmjs.org/package/aframe-aframe-soundscape-component)
 [![License](http://img.shields.io/npm/l/aframe-aframe-soundscape-component.svg?style=flat-square)](https://npmjs.org/package/aframe-aframe-soundscape-component)
@@ -23,7 +23,7 @@ Install and use by directly including the [browser files](dist):
 <head>
   <title>My A-Frame Scene</title>
   <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-aframe-soundscape-component/dist/aframe-aframe-soundscape-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-soundscape-component/dist/aframe-aframe-soundscape-component.min.js"></script>
 </head>
 
 <body>
@@ -40,7 +40,7 @@ version of the component straight into your HTML file, respective to your
 version of A-Frame:
 
 ```sh
-angle install aframe-aframe-soundscape-component
+angle install aframe-soundscape-component
 ```
 -->
 
@@ -49,7 +49,7 @@ angle install aframe-aframe-soundscape-component
 Install via npm:
 
 ```bash
-npm install aframe-aframe-soundscape-component
+npm install aframe-soundscape-component
 ```
 
 Then require and use.
