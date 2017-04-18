@@ -16,6 +16,9 @@ AFRAME.registerComponent('aframe-soundscape', {
         noise: {
             default: 0.0004
         },
+        fogColor:{
+            default: 0x000000
+        },
         colors: {
             default: ['0xC07000']
         },
@@ -27,6 +30,9 @@ AFRAME.registerComponent('aframe-soundscape', {
         },
         texture: {
             default:"textures/terrain/grasslight-big.jpg"
+        },
+        textureNormalMapCanvas:{
+            default:"soundScapeNM"
         }
     },
 
@@ -81,14 +87,15 @@ AFRAME.registerComponent('aframe-soundscape', {
         for (var i = 0; i < this.el.attributes.length; i++) {
             var attrib = this.el.attributes[i];
             if (attrib.specified && attrib.name === 'canvas-material') {
-                console.log(this.el.components)
                 this.data.canvasMaterail.push(this.el.components['canvas-material'].canvas)
+                //var nmTex = document.getElementById(this.data.textureNormalMapCanvas)
+                //this.data.canvasMaterail.push(nmTex.components['canvas-material'].canvas)
                 break;
             }
         }
 
         this.scene  = this.el.sceneEl.object3D;
-        this.scene.fog = new THREE.Fog( 0x050505, 2000, 4000 );
+        this.scene.fog = new THREE.Fog( this.data.fogColor, 2000, 4000 );
 
         // LIGHTS
 
@@ -161,7 +168,11 @@ AFRAME.registerComponent('aframe-soundscape', {
         this.data.uniformsTerrain[ 'tDisplacement' ].value = this.data.heightMap.texture;
         if(this.data.canvasMaterail.length){
             this.data.canvasTexture.push(new THREE.CanvasTexture( this.data.canvasMaterail[0] ));
+            //this.data.canvasTexture.push(new THREE.CanvasTexture( this.data.canvasMaterail[1] ));
+            this.data.canvasTexture[0].wrapS = this.data.canvasTexture[0].wrapT = THREE.RepeatWrapping;
+            //this.data.canvasTexture[1].wrapS = this.data.canvasTexture[1].wrapT = THREE.RepeatWrapping;
             this.data.uniformsTerrain[ 'tDiffuse1' ].value = this.data.canvasTexture[0];
+            //this.data.uniformsTerrain[ 'tDiffuse2' ].value = this.data.canvasTexture[1];
             this.data.uniformsTerrain[ 'tDiffuse2' ].value = diffuseTexture2;
         }else{
             this.data.uniformsTerrain[ 'tDiffuse1' ].value = diffuseTexture1;
@@ -244,7 +255,7 @@ AFRAME.registerComponent('aframe-soundscape', {
      */
     tick: function (t) {
         var delta = this.data.clock.getDelta();
-        this.camera = this.el.sceneEl.camera;
+        //this.camera = this.el.sceneEl.camera;
         this.render = this.el.sceneEl.renderer;
         this.scene  = this.el.sceneEl.object3D;
 
@@ -260,7 +271,7 @@ AFRAME.registerComponent('aframe-soundscape', {
 
             var valNorm = ( this.data.lightVal - fLow ) / ( fHigh - fLow );
 
-            this.scene.fog.color.setHSL( 0.1, 0.5, this.data.lightVal );
+            //this.scene.fog.color.setHSL( 0.1, 0.5, this.data.lightVal );
 
             this.render.setClearColor( this.scene.fog.color );
 
