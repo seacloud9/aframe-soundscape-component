@@ -33,6 +33,9 @@ AFRAME.registerComponent('aframe-soundscape', {
         },
         textureNormalMapCanvas:{
             default:"soundScapeNM"
+        },
+        initTextureFunction:{
+            default:null,
         }
     },
 
@@ -44,7 +47,15 @@ AFRAME.registerComponent('aframe-soundscape', {
     /**
      * Called once when component is attached. Generally for initial setup.
      */
+
     init: function () {
+        this.data.initTextureFunction !== null ? this.data.initTextureFunction():this.initSoundScape();
+    },
+
+    /**
+     * Called after textures have been loaded
+     */
+    initSoundScape: function () {
         // SCENE (FINAL)
         var el = this.el;
         this.data.SCREEN_WIDTH = window.innerWidth;
@@ -88,8 +99,10 @@ AFRAME.registerComponent('aframe-soundscape', {
             var attrib = this.el.attributes[i];
             if (attrib.specified && attrib.name === 'canvas-material') {
                 this.data.canvasMaterail.push(this.el.components['canvas-material'].canvas)
-                //var nmTex = document.getElementById(this.data.textureNormalMapCanvas)
-                //this.data.canvasMaterail.push(nmTex.components['canvas-material'].canvas)
+                var nmTex = document.getElementById(this.data.textureNormalMapCanvas)
+                if(nmTex !== null){
+                    this.data.canvasMaterail.push(nmTex.components['canvas-material'].canvas)
+                }
                 break;
             }
         }
@@ -168,12 +181,15 @@ AFRAME.registerComponent('aframe-soundscape', {
         this.data.uniformsTerrain[ 'tDisplacement' ].value = this.data.heightMap.texture;
         if(this.data.canvasMaterail.length){
             this.data.canvasTexture.push(new THREE.CanvasTexture( this.data.canvasMaterail[0] ));
-            //this.data.canvasTexture.push(new THREE.CanvasTexture( this.data.canvasMaterail[1] ));
             this.data.canvasTexture[0].wrapS = this.data.canvasTexture[0].wrapT = THREE.RepeatWrapping;
-            //this.data.canvasTexture[1].wrapS = this.data.canvasTexture[1].wrapT = THREE.RepeatWrapping;
             this.data.uniformsTerrain[ 'tDiffuse1' ].value = this.data.canvasTexture[0];
-            //this.data.uniformsTerrain[ 'tDiffuse2' ].value = this.data.canvasTexture[1];
-            this.data.uniformsTerrain[ 'tDiffuse2' ].value = diffuseTexture2;
+            if(this.data.canvasMaterail.length > 1){
+                this.data.canvasTexture.push(new THREE.CanvasTexture( this.data.canvasMaterail[1] ));
+                this.data.canvasTexture[1].wrapS = this.data.canvasTexture[1].wrapT = THREE.RepeatWrapping;
+                this.data.uniformsTerrain[ 'tDiffuse2' ].value = this.data.canvasTexture[1];
+            }else{
+                this.data.uniformsTerrain[ 'tDiffuse2' ].value = diffuseTexture2;
+            }
         }else{
             this.data.uniformsTerrain[ 'tDiffuse1' ].value = diffuseTexture1;
             this.data.uniformsTerrain[ 'tDiffuse2' ].value = diffuseTexture2;
