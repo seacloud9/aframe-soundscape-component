@@ -49,7 +49,12 @@ AFRAME.registerComponent('aframe-soundscape', {
      */
 
     init: function () {
-        this.data.initTextureFunction !== null ? window[this.data.initTextureFunction]():this.initSoundScape();
+        if(this.data.initTextureFunction !== null){
+            this.pause()
+            window[this.data.initTextureFunction].apply(this)
+        }else{
+            this.initSoundScape();
+        }
     },
 
     /**
