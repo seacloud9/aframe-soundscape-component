@@ -95,7 +95,7 @@
 	     */
 
 	    init: function () {
-	        this.data.initTextureFunction !== null ? this.data.initTextureFunction():this.initSoundScape();
+	        this.data.initTextureFunction !== null ? window[this.data.initTextureFunction]():this.initSoundScape();
 	    },
 
 	    /**
