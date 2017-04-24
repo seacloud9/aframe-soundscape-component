@@ -49,10 +49,12 @@ AFRAME.registerComponent('aframe-soundscape', {
      */
 
     init: function () {
+        this.hasInit = false;
         if(this.data.initTextureFunction !== null){
             this.pause()
             window[this.data.initTextureFunction].apply(this)
         }else{
+            this.hasInit = true;
             this.initSoundScape();
         }
     },
@@ -275,52 +277,55 @@ AFRAME.registerComponent('aframe-soundscape', {
      * Called on each this.scene tick.
      */
     tick: function (t) {
-        var delta = this.data.clock.getDelta();
-        //this.camera = this.el.sceneEl.camera;
-        this.render = this.el.sceneEl.renderer;
-        this.scene  = this.el.sceneEl.object3D;
+        if( this.hasInit ){
+            var delta = this.data.clock.getDelta();
+            //this.camera = this.el.sceneEl.camera;
+            this.render = this.el.sceneEl.renderer;
+            this.scene  = this.el.sceneEl.object3D;
 
 
-        if ( this.data.terrain.visible ) {
+            if ( this.data.terrain.visible ) {
 
 
-            var time = Date.now() * 0.001;
+                var time = Date.now() * 0.001;
 
-            var fLow = 0.1, fHigh = 0.8;
+                var fLow = 0.1, fHigh = 0.8;
 
-            this.data.lightVal = THREE.Math.clamp( this.data.lightVal + 0.5 * delta * this.data.lightDir, fLow, fHigh );
+                this.data.lightVal = THREE.Math.clamp( this.data.lightVal + 0.5 * delta * this.data.lightDir, fLow, fHigh );
 
-            var valNorm = ( this.data.lightVal - fLow ) / ( fHigh - fLow );
+                var valNorm = ( this.data.lightVal - fLow ) / ( fHigh - fLow );
 
-            //this.scene.fog.color.setHSL( 0.1, 0.5, this.data.lightVal );
+                //this.scene.fog.color.setHSL( 0.1, 0.5, this.data.lightVal );
 
-            this.render.setClearColor( this.scene.fog.color );
+                this.render.setClearColor( this.scene.fog.color );
 
-            this.data.directionalLight.intensity = THREE.Math.mapLinear( valNorm, 0, 1, 0.1, 1.15 );
-            this.data.pointLight.intensity = THREE.Math.mapLinear( valNorm, 0, 1, 0.9, 1.5 );
+                this.data.directionalLight.intensity = THREE.Math.mapLinear( valNorm, 0, 1, 0.1, 1.15 );
+                this.data.pointLight.intensity = THREE.Math.mapLinear( valNorm, 0, 1, 0.9, 1.5 );
 
-            this.data.uniformsTerrain[ 'uNormalScale' ].value = THREE.Math.mapLinear( valNorm, 0, 1, 0.6, 3.5 );
+                this.data.uniformsTerrain[ 'uNormalScale' ].value = THREE.Math.mapLinear( valNorm, 0, 1, 0.6, 3.5 );
 
-            if ( this.data.updateNoise ) {
+                if ( this.data.updateNoise ) {
 
-                this.data.animDelta = THREE.Math.clamp( this.data.animDelta + 0.00075 * this.data.animDeltaDir, 0, 0.05 );
-                this.data.uniformsNoise[ 'time' ].value += delta * this.data.animDelta;
+                    this.data.animDelta = THREE.Math.clamp( this.data.animDelta + 0.00075 * this.data.animDeltaDir, 0, 0.05 );
+                    this.data.uniformsNoise[ 'time' ].value += delta * this.data.animDelta;
 
-                this.data.uniformsNoise[ 'offset' ].value.x += delta * 0.05;
+                    this.data.uniformsNoise[ 'offset' ].value.x += delta * 0.05;
 
-                this.data.uniformsTerrain[ 'uOffset' ].value.x = 4 * this.data.uniformsNoise[ 'offset' ].value.x;
+                    this.data.uniformsTerrain[ 'uOffset' ].value.x = 4 * this.data.uniformsNoise[ 'offset' ].value.x;
 
-                this.data.quadTarget.material = this.data.mlib[ 'heightmap' ];
-                this.render.render( this.data.sceneRenderTarget, this.data.cameraOrtho, this.data.heightMap, true );
+                    this.data.quadTarget.material = this.data.mlib[ 'heightmap' ];
+                    this.render.render( this.data.sceneRenderTarget, this.data.cameraOrtho, this.data.heightMap, true );
 
-                this.data.quadTarget.material = this.data.mlib[ 'normal' ];
-                this.render.render( this.data.sceneRenderTarget, this.data.cameraOrtho , this.data.normalMap, true );
+                    this.data.quadTarget.material = this.data.mlib[ 'normal' ];
+                    this.render.render( this.data.sceneRenderTarget, this.data.cameraOrtho , this.data.normalMap, true );
 
+                }
+
+                if(this.data.canvasTexture.length){
+                    this.data.canvasTexture[0].needsUpdate = true;
+                }
             }
 
-            if(this.data.canvasTexture.length){
-                this.data.canvasTexture[0].needsUpdate = true;
-            }
         }
     },
 
