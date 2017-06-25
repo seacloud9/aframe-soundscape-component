@@ -63,10 +63,10 @@
 	            default: 0.0004
 	        },
 	        fogColor:{
-	            default: 0x000000
+	            default: 0x025e7f
 	        },
 	        colors: {
-	            default: ['0xC07000']
+	            default: ['0x025e7f']
 	        },
 	        textureBg:{
 	            default:  "textures/terrain/backgrounddetailed6.jpg",
