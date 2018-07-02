@@ -4,6 +4,12 @@
 [![License](http://img.shields.io/npm/l/aframe-aframe-soundscape-component.svg?style=flat-square)](https://npmjs.org/package/aframe-aframe-soundscape-component)
 
 Soundscape a component for utilizing sound and noise to generate terrain and landscapes that are animated
+<br />
+<br />
+<a href='http://seacloud9.github.io/aframe-noise-scape/basic/' target='blank'>
+<img src='aframe-noise-scape.gif' alt='aframe-maze' />
+</a>
+<br />
 
 For [A-Frame](https://aframe.io).
 
